@@ -1,0 +1,51 @@
+---
+title: "Building Patient-Level Predictive Model with MIMIC-III"
+author: "Eduardo Angulo"
+date: '`r Sys.Date()`' #"26/5/2022"
+output: html_document
+---
+
+# Introduction
+Loren ipsum
+
+# System specification
+Loren ipsum
+
+# Study specification
+Loren ipsum
+
+## Study population definition
+Loren ipsum
+
+## Model development settings
+Loren ipsum
+
+## Study implementation
+Loren ipsum
+
+### Cohort instantiation
+Loren ipsum
+
+### ATLAS cohort builder
+Loren ipsum
+
+### Study script creation
+Loren ipsum
+
+### Data extraction
+Loren ipsum
+
+### Additional inclusion criteria
+Loren ipsum
+
+### Spliting the data into training/validation/testing datasets
+Loren ipsum
+
+### Preprocessing the training data
+Loren ipsum
+
+### Model development
+Loren ipsum
+
+### Result analysis
+Loren ipsum

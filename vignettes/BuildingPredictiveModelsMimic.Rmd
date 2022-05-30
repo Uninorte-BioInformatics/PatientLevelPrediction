@@ -9,13 +9,16 @@ output: html_document
 Loren ipsum
 
 # System specification
-In this section we present a form of execute this vignette, by configuring a Docker in your local machine or in a Virtual Machine (VM) in the cloud.
-We assume that the reader has access, locally or in the cloud, to [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format.
+In this section we present a form of executing this vignette, by configuring a Docker in your local machine or in a Virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:
 - If you are using a VM in the cloud you need to connect to it via SSH and establish a SSH tunnel using `ssh -L <local_port>:localhost:8787 <vm_user>@<vm_ip>`.
 - Install [Docker Engine](https://docs.docker.com/engine/install/) if not installed.
 - Clone the [OHDSI/PatientLevelPrediction](https://github.com/OHDSI/PatientLevelPrediction) repository.
 - Make sure that the port 8787 is available on the machine that will run the Docker.
-- Run the following command `docker run -d --name=rstudio-ohdsi-mimic --network=host -v <path_to_local_repo>:/home/ohdsi/workdir -e USER=ohdsi -e PASSWORD=ohdsi odysseusinc/rstudio-ohdsi:latest`. If Docker is not on sudoers list, you may need to run it as sudo.
+- Run the following command `docker run -d --name=<docker_name> --network=host -v <path_to_repository>:/home/ohdsi/workdir -e USER=ohdsi -e PASSWORD=ohdsi odysseusinc/rstudio-ohdsi:latest`. If Docker is not on sudoers list/group, you may need to run it as sudo.
+- On your browser, access to `http://localhost:8787` and login to rstudio using the following credentials:
+  - **Username:** ohdsi
+  - **Password:** ohdsi
+- On the file explorer, search for `vignettes/BuildingPredictiveModelsMimic.Rmd` file and run it.
 
 # Study specification
 Loren ipsum

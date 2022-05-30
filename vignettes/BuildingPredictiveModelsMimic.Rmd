@@ -1,6 +1,6 @@
 ---
 title: "Building Patient-Level Predictive Model with MIMIC-III"
-author: "Eduardo Angulo"
+author: "Eduardo Angulo, Cristhyan De Marchena"
 date: '`r Sys.Date()`' #"26/5/2022"
 output: html_document
 ---

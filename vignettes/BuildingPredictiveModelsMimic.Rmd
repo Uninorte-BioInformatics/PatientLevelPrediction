@@ -42,10 +42,35 @@ Loren ipsum
 Loren ipsum
 
 ### Preprocessing the training data
-Loren ipsum
+ 
+It was used the default sample settings. it simply returns the trainData as input, see below: 
+
+```{r tidy=FALSE,eval=FALSE}
+  sampleSettings <- PatientLevelPrediction::createSampleSettings()
+```
+
+However, the current package contains methods of under-sampling the non-outcome patients.  To perform undersampling, the `type` input should be 'underSample' and `numberOutcomestoNonOutcomes` must be specified (an integer specifying the number of non-outcomes per outcome).  It is possible to add any custom function for over/under sampling, see [vignette for custom sampling](https://github.com/OHDSI/PatientLevelPrediction/blob/master/inst/doc/AddingCustomSamples.pdf).
+
+It is possible to specify a combination of feature engineering functions that take as input the trainData and output a new trainData with different features.  The default feature engineering setting does nothing:
+
+```{r tidy=FALSE,eval=FALSE}
+  featureEngineeringSettings <- PatientLevelPrediction::createFeatureEngineeringSettings()
+```
+
+
+Finally, the preprocessing settings.  For this setting it was defined `minFraction = 0.01`, this removes any features that is observed in the training data for less than 0.01 fraction of the patients. The input `normalize = T` specifies whether the features are scaled between 0 and 1.  The input `removeRedundancy = T` specifies whether features that are observed in all of the target population are removed.
+
+```{r tidy=FALSE,eval=FALSE}
+  preprocessSettings <- PatientLevelPrediction::createPreprocessSettings(
+	minFraction = 0.01, 
+	normalize = T, 
+	removeRedundancy = T
+	)
+```
+
 
 ### Model development
-Loren ipsum
+
 
 ### Result analysis
 Loren ipsum

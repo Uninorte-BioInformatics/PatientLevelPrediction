@@ -40,7 +40,7 @@ Furthermore, we have to decide on the **covariates** that we will use to train o
 [comment]: <> (We also have to specify in which time windows we will look and we decide to look in year before and any time prior. )
 
 ## Study implementation
-Now we have completely design our study we have to implement the study. We have to generate the target and outcome cohorts and we need to develop the R code to run against our MIMIC-III database that will execute the full study.
+Now we have completely designed our study, and we have to implement it. We have to generate the target and outcome cohorts and we need to develop the R code to run against our MIMIC-III database that will execute the analysis.
 
 ### Cohort instantiation
 In order to load our cohorts, we leverage some of the work by generating the SQL script with [ATLAS](#atlas-cohort-builder). The result table would have the following structure:

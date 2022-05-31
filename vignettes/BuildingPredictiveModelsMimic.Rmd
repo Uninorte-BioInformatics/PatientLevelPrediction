@@ -93,7 +93,7 @@ _Note: We hid our host and password fields with default values in order to block
 
 
 #### Loading cohorts
-Furthermore we proceeds as follows in order to load the target cohort:
+Furthermore, we proceeds as follows in order to load the target cohort:
 ```{r echo=T}
 sql = SqlRender::readSql('targetCohort.sql')
 sql = SqlRender::render(

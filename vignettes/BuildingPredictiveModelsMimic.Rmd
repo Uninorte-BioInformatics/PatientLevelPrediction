@@ -56,7 +56,7 @@ In order to load our cohorts, we leverage some of the work by generating the SQL
 Loren ipsum
 
 ### Database connection
-After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with out database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
+After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with our database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
 ```{r echo=F results='hide'}
 base_path = '/home/ohdsi'
 driver_path = paste0(base_path, '/drivers')

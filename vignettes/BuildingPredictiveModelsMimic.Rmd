@@ -119,7 +119,7 @@ sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
 SqlRender::executeSql(connection, sql)
 ```
 
-Lastly we can check our cohort generation with the following R code:
+In addition, we can check our cohort generation with the following R code:
 ```{r echo=T}
 sql = paste(
   'SELECT cohort_definition_id, COUNT(*) AS count',

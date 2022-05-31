@@ -67,7 +67,7 @@ DatabaseConnector::downloadJdbcDrivers(
 )
 ```
 
-Due to downloading the driver amongst other reasons, we move our working directory and set some environment variables:
+Due to downloading the driver, amongst other reasons, we move our working directory and set some environment variables:
 ```{r echo=F results='hide'}
 Sys.setenv(DATABASECONNECTOR_JAR_FOLDER=driver_path)
 

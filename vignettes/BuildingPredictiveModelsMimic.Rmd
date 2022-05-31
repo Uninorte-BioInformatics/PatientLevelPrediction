@@ -12,10 +12,32 @@ Loren ipsum
 Loren ipsum
 
 # Study specification
-Loren ipsum
+
+To perform this study is necessary to define the prediction problem that will be addressed, the target and outcome cohorts,  which algorithm will be implemented for the model, and how the model will be evaluated and validated. Next, a case of a patient-level predictive model is presented.
+
+## Problem Definition
+
+Cardiovascular Disease (CVD) is a term used to group several conditions that affect the heart or blood vessels. These are the leading cause of death globally. According to World Health Organization, about 17.9 million people died due to CVDs in 2019, which represents 32% of all global deaths. On the other hand, heart disease, a type of CVD, is the cause of about 659,000 deads in the United States, that is, one in every four. By the above, the need to develop predictive models that allow detecting the risk of the patient is observed.
+
+In this work, the PatientLevelPrediction package is applied to observational healthcare data to address the following patient-level prediction question:
+
+Which heart disease patients admitted into the intensive care unit (ICU) have a high risk of death?
+
+The target cohort was defined as the patients who have been diagnosed with heart disease anytime and were admitted into ICU before the index time. On the other hand, the outcome cohort was defined as the patients that passed away.
 
 ## Study population definition
-Loren ipsum
+
+To define the population of this study is necessary to keep in mind the following:
+
+- The observation time used in this study was defined as any time before the index time.
+
+- In this study was defined that patients do not enter multiple times in the target cohort even if they have several diagnoses that qualified to get into it.
+
+- Keeping in mind that the outcome of this study is death, it is not allowed the entry of patients that had experienced the outcome without getting into the target cohort.
+
+- In this study, the predictions will be performed in a ‘time-at-risk’ window starting one day after the start of the target cohort up to 90 days later.
+
+- A minimum time-at-risk of 30 days was defined for this study. The above was performed to include patients that do not experience the outcome earlier than the end of the time-at-risk period and exit the database.
 
 ## Model development settings
 Loren ipsum

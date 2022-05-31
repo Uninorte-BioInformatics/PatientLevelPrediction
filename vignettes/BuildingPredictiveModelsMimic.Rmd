@@ -39,8 +39,8 @@ For the data, a connection is initially made to the database, which is hosted in
 connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "postgresql",
 	user = 'postgres',
 	server = 'mimic-server.postgres.database.azure.com/mimic',
-	port = 5432,
-	password = 'securepass321.',
+	port = PORT,
+	password = 'PASSWORD',
 	pathToDriver=pathToDriver)
 
 	connection <- DatabaseConnector::connect(connectionDetails)

@@ -33,13 +33,177 @@ Loren ipsum
 Loren ipsum
 
 ### Data extraction
-Loren ipsum
+For the data, a connection is initially made to the database, which is hosted in Azure, for which we use the following code snippets to create the connection with the database
+
+```{r}
+connectionDetails <- DatabaseConnector::createConnectionDetails(dbms = "postgresql",
+	user = 'postgres',
+	server = 'mimic-server.postgres.database.azure.com/mimic',
+	port = 5432,
+	password = 'securepass321.',
+	pathToDriver=pathToDriver)
+
+	connection <- DatabaseConnector::connect(connectionDetails)
+```
+
+Once the connection with the database has been created, we select the records corresponding to the target cohort, for which in this case we use patients who have suffered hospitalized or non-hospitalized heart failure as examples.
+
+```{r}
+	# Run the Target Cohort 
+	DatabaseConnector::executeSql(connection,
+	sql_psql_heart_failure)
+	
+
+	DatabaseConnector::executeSql(connection,
+	sql_psql_heart_failure_hospitalization)
+```	
+
+After establishing the target cohort, we establish the event to be predicted by defining an outcome cohort of previous data in the records.
+```{r}
+	# Run the Outcome Cohort
+	DatabaseConnector::executeSql(connection,
+	sql_psql_any_death)
+```
+Once this is done we can use the following snippets to review the records of each group in the cohorts
+
+```{r}
+	sql <- "SELECT
+	COUNT(*) AS COUNTS
+	FROM
+	omop.kamila_cohorts
+	WHERE
+	cohort_definition_id = 2
+	"
+	df <- DatabaseConnector::querySql(connection, sql)
+	print("Target Cohort Counts")
+	print(df)
+```
+
+
+```{r}
+	sql <- "SELECT
+	COUNT(*) AS COUNTS
+	FROM
+	omop.kamila_cohorts
+	WHERE
+	cohort_definition_id = 4
+	"
+	 df <- DatabaseConnector::querySql(connection, sql)
+	print("Target Cohort Counts")
+	print(df)
+```
+
+
+```{r}
+	sql <- "SELECT
+	COUNT(*) AS COUNTS
+	FROM
+	omop.kamila_cohorts
+	WHERE
+	cohort_definition_id = 3
+	"
+	df <- DatabaseConnector::querySql(connection, sql)
+	print("Outcome Cohort Counts")
+	print(df)
+	DatabaseConnector::disconnect(connection)
+```
+
 
 ### Additional inclusion criteria
-Loren ipsum
+In case of requiring more memory use, use the following command to increase the memory to be used by the JDBC drivers 
+```{r }
+options(java.parameters = "-Xmx2000m")
+```
+
+Other inclusion criteria can also be defined to extract the relevant characteristics, for which we use the createCovariateSettings method, which we can find more information in the following [link](https://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html) 
+
+```{r }
+	covariateSettings <- FeatureExtraction::createCovariateSettings(useDemographicsGender = TRUE,
+	                                                                useDemographicsAge = TRUE,
+	                                                                useConditionGroupEraLongTerm = TRUE,
+	                                                                useConditionGroupEraAnyTimePrior = TRUE,
+	                                                                useDrugGroupEraLongTerm = TRUE,
+	                                                                useDemographicsRace = TRUE,
+	                                                                useConditionOccurrenceAnyTimePrior = TRUE,
+	                                                                useConditionOccurrenceLongTerm = TRUE,
+	                                                                useConditionOccurrenceMediumTerm = TRUE,
+	                                                                useConditionOccurrenceShortTerm = TRUE,
+	                                                                useDemographicsAgeGroup = TRUE,
+	                                                                useConditionEraAnyTimePrior = TRUE,
+	                                                                useProcedureOccurrenceAnyTimePrior = TRUE,
+	                                                                useMeasurementAnyTimePrior = TRUE,
+	                                                                useMeasurementValueAnyTimePrior = TRUE,
+	                                                                useDrugGroupEraAnyTimePrior = TRUE,
+	                                                                useCharlsonIndex = TRUE,
+	                                                                useDcsi = TRUE,
+	                                                                useChads2 = TRUE,
+	                                                                useChads2Vasc = TRUE,
+	                                                                useVisitConceptCountLongTerm = TRUE,
+	                                                                longTermStartDays = -365,
+	                                                                endDays = -1)
+```
+
+Create a configuration that contains the details about the cdmDatabase connection for data extraction, for [more information](https://ohdsi.github.io/PatientLevelPrediction/reference/createDatabaseDetails.html) 
+```{r }
+	databaseDetails <- PatientLevelPrediction::createDatabaseDetails(connectionDetails = connectionDetails,
+	                                                                 cdmDatabaseSchema = dbSchema,
+	                                                                 cdmDatabaseName = dbName,
+	                                                                 cohortDatabaseSchema = dbSchema,
+	                                                                 cohortTable = target_cohort_table,
+	                                                                 cohortId = 2,
+	                                                                 outcomeDatabaseSchema = dbSchema,
+	                                                                 outcomeTable = target_cohort_table,
+	                                                                 outcomeIds = 3,
+	                                                                 cdmVersion = 5
+	)
+```
+
+We restrict the sample size if we do not feel we have enough computing power or if we only want to run a small sample.
+	
+```{r }
+	restrictPlpDataSettings <- PatientLevelPrediction::createRestrictPlpDataSettings(sampleSize = 100000)
+```
+
+This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis[more info](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
+
+Once the necessary data has been extracted, we save it in case we want to replicate the example
+
+```{r }
+	plpData <- PatientLevelPrediction::getPlpData(databaseDetails = databaseDetails,
+	                                              covariateSettings = covariateSettings,
+	                                              restrictPlpDataSettings = restrictPlpDataSettings
+	)
+	
+
+	PatientLevelPrediction::savePlpData(plpData, "~/Home/cohort_test_model_Gio")
+```
+
+The configuration for the study population is created, which details information such as the start and end of the cut, risk window and the outcome. For more information about the method you can read its [documentation](https://www.rdocumentation.org/packages/PatientLevelPrediction/versions/4.3.10/topics/createStudyPopulationSettings). 
+```{r }
+
+	populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(washoutPeriod = 0,
+	                                                                            firstExposureOnly = TRUE,
+	                                                                            removeSubjectsWithPriorOutcome = TRUE,
+	                                                                            priorOutcomeLookback = 99999,
+	                                                                            riskWindowStart = 1,
+	                                                                            riskWindowEnd = 90,
+	                                                                            startAnchor =  'cohort start',
+	                                                                            endAnchor =  'cohort start',
+	                                                                            minTimeAtRisk = 30,
+	                                                                            requireTimeAtRisk = TRUE,
+	                                                                            includeAllOutcomes = TRUE)
+
+```
 
 ### Spliting the data into training/validation/testing datasets
-Loren ipsum
+Continuing with the steps for model training, we divide the data into training, validation and test sets, this with the values defined for cross-validation.
+```{r }
+splitSettings <- PatientLevelPrediction::createDefaultSplitSetting( trainFraction = 0.75,
+	                                                                    testFraction = 0.25,
+	                                                                    type = 'stratified',
+	                                                                    nfold = 5, 
+	                                                                    splitSeed = 1234)
+```
 
 ### Preprocessing the training data
 Loren ipsum

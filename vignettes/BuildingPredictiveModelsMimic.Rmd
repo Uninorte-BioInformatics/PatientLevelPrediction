@@ -1,6 +1,6 @@
 ---
 title: "Building Patient-Level Predictive Model with MIMIC-III"
-author: "Eduardo Angulo"
+author: "Eduardo Angulo, Cristhyan De Marchena"
 date: '`r Sys.Date()`' #"26/5/2022"
 output: html_document
 ---
@@ -8,8 +8,17 @@ output: html_document
 # Introduction
 Loren ipsum
 
-# System specification
-Loren ipsum
+# Running configuration
+In this section we present a form of executing this vignette, by configuring a Docker container in your local machine or in a Virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in the [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:
+- If you are using a VM in the cloud you need to connect to it via SSH and establish a SSH tunnel using `ssh -L <local_port>:localhost:8787 <vm_user>@<vm_ip>`.
+- Install [Docker Engine](https://docs.docker.com/engine/install/) if not installed.
+- Clone the [OHDSI/PatientLevelPrediction](https://github.com/OHDSI/PatientLevelPrediction) repository.
+- Make sure that the port 8787 is available on the machine that will run the Docker container.
+- Run the following command `docker run -d --name=<docker_name> --network=host -v <path_to_repository>:/home/ohdsi/workdir -e USER=ohdsi -e PASSWORD=ohdsi odysseusinc/rstudio-ohdsi:latest`. If the docker user is not on sudoers list/group, you may need to run it as sudo.
+- On your browser, access to `http://localhost:8787` and login to rstudio using the following credentials:
+  - **Username:** ohdsi
+  - **Password:** ohdsi
+- On the file explorer, search for `vignettes/BuildingPredictiveModelsMimic.Rmd` file and run it.
 
 # Study specification
 Loren ipsum
@@ -18,19 +27,135 @@ Loren ipsum
 Loren ipsum
 
 ## Model development settings
-Loren ipsum
+Due to the nature of our problem we have to abide to a binary classification, thus we selected two target models:
+
+| **Algorithm**                   | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | **Hyper-parameters**                                                                                                                                                |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Regularized Logistic Regression | Lasso logistic regression belongs to the family of generalized linear models, where a linear combination of the variables is learned and finally a logistic function maps the linear combination to a value between 0 and 1. The lasso regularization adds a cost based on model complexity to the objective function when training the model. This cost is the sum of the absolute values of the linear combination of the coefficients. The model automatically performs feature selection by minimizing this cost. | `var` (starting variance), `seed`                                                                                                                                   |
+| Gradient boosting machines      | Gradient boosting machines is a boosting ensemble technique and in our framework it combines multiple decision trees. Boosting works by iteratively adding decision trees but adds more weight to the data-points that are misclassified by prior decision trees in the cost function when training the next tree.                                                                                                                                                                                                    | `ntree` (number of trees), `max depth` (max levels in tree), `min rows` (minimum data points in in node), `learning rate`, `balance` (balance class labels), `seed` |
+
+Furthermore, we have to decide on the **covariates** that we will use to train our model. In our example, we add covariates such as _**TODO: Insert covariates**_
+
+[comment]: <> (Gender, Age, Conditions, Drugs Groups, and Visit Count.)
+[comment]: <> (We also have to specify in which time windows we will look and we decide to look in year before and any time prior. )
 
 ## Study implementation
-Loren ipsum
+Now we have completely designed our study, and we have to implement it. We have to generate the target and outcome cohorts and we need to develop the R code to run against our MIMIC-III database that will execute the analysis.
 
 ### Cohort instantiation
-Loren ipsum
+In order to load our cohorts, we leverage some of the work by generating the SQL script with [ATLAS](#atlas-cohort-builder). The result table would have the following structure:
+
+| **Column**             | **Description**                                                                                             |
+|------------------------|-------------------------------------------------------------------------------------------------------------|
+| `cohort_definition_id` | A unique identifier for distinguishing between different types of cohorts, e.g. target and outcome cohorts. |
+| `subject_id`           | A unique identifier corresponding to the person_id in the CDM.                                              |
+| `cohort_start_date`    | The date the subject enters the cohort.                                                                     |
+| `cohort_end_date`      | The date the subject leaves the cohort.                                                                     |
 
 ### ATLAS cohort builder
 Loren ipsum
 
+### Database connection
+After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with our database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
+```{r echo=F results='hide'}
+base_path = '/home/ohdsi'
+driver_path = paste0(base_path, '/drivers')
+
+DatabaseConnector::downloadJdbcDrivers(
+  dbms='postgresql',
+  pathToDriver = driver_path
+)
+```
+
+Due to downloading the driver, amongst other reasons, we move our working directory and set some environment variables:
+```{r echo=F results='hide'}
+Sys.setenv(DATABASECONNECTOR_JAR_FOLDER=driver_path)
+
+expected_wd = paste0(base_path, '/workdir/src')
+if (getwd() != expected_wd){
+  setwd(cat(getwd(), '/workdir/src/'))  
+}
+```
+
+Then, we can stablish a connection with our MIMIC-III database as follows:
+```{r echo=T}
+input_schema = 'CDM_SCHEMA'
+output_schema = 'COHORT_SCHEMA'
+
+connectionDetails = DatabaseConnector::createConnectionDetails(
+  dbms='postgresql',  
+  user='postgres', 
+  password='supersecret',
+  server='localhost/ohdsi',
+  port=5432,
+  extraSettings='ssl=true;',
+  pathToDriver=Sys.getenv('DATABASECONNECTOR_JAR_FOLDER')
+)
+
+connection = DatabaseConnector::connect(connectionDetails)
+DatabaseConnector::dbListTables(connection, schema=input_schema)
+```
+
+_Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
+
+
+### Loading cohorts
+Furthermore, we proceed as follows in order to load the target cohort:
+```{r echo=T}
+sql = SqlRender::readSql('targetCohort.sql')
+sql = SqlRender::render(
+  sql, 
+  input_schema=input_schema, 
+  output_schema=output_schema
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+
+SqlRender::executeSql(connection, sql)
+```
+
+Then, we repeat this process with the outcome cohort:
+```{r echo=T}
+sql = SqlRender::readSql('outcomeCohort.sql')
+sql = SqlRender::render(
+  sql, 
+  input_schema=input_schema, 
+  output_schema=output_schema
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+
+SqlRender::executeSql(connection, sql)
+```
+
+In addition, we can check our cohort generation with the following R code:
+```{r echo=T}
+sql = paste(
+  'SELECT cohort_definition_id, COUNT(*) AS count',
+  'FROM @output_schema.@cohort_table',
+  'GROUP BY cohort_definition_id'
+)
+sql = SqlRender::render(
+  sql, 
+  output_schema=output_schema, 
+  cohort_table='cohorts_of_interest'
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+SqlRender::querySql(connection, sql)
+```
+
+And we can view some entries with the following R code:
+```{r echo=T}
+sql = paste('SELECT * FROM @output_schema.@cohort_table LIMIT 5')
+sql = SqlRender::render(
+  sql, 
+  output_schema=output_schema, 
+  cohort_table='cohorts_of_interest'
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+SqlRender::querySql(connection, sql)
+```
+
 ### Study script creation
-Loren ipsum
+In this section, we will explain how to continue the R script that will execute our study as we have defined previously. Remember that our cohorts have been created by using [ATLAS](#atlas-cohort-builder).
 
 ### Data extraction
 Loren ipsum

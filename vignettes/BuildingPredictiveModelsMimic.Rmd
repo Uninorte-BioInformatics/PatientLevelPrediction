@@ -155,7 +155,7 @@ SqlRender::querySql(connection, sql)
 ```
 
 ### Study script creation
-Loren ipsum
+In this section, we will explain how to continue the R script that will execute our study as we have defined previously. Remember that our cohorts have been created by using [ATLAS](#atlas-cohort-builder).
 
 ### Data extraction
 Loren ipsum

@@ -164,7 +164,7 @@ We restrict the sample size if we do not feel we have enough computing power or 
 	restrictPlpDataSettings <- PatientLevelPrediction::createRestrictPlpDataSettings(sampleSize = 100000)
 ```
 
-This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis[more info](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
+This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis [more info](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
 
 Once the necessary data has been extracted, we save it in case we want to replicate the example
 

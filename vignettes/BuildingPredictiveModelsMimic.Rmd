@@ -27,16 +27,125 @@ Loren ipsum
 Loren ipsum
 
 ## Model development settings
-Loren ipsum
+Due to the nature of our problem we have to abide to a binary classification, thus we selected two target models:
+
+| **Algorithm**                   | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | **Hyper-parameters**                                                                                                                                                |
+|---------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Regularized Logistic Regression | Lasso logistic regression belongs to the family of generalized linear models, where a linear combination of the variables is learned and finally a logistic function maps the linear combination to a value between 0 and 1. The lasso regularization adds a cost based on model complexity to the objective function when training the model. This cost is the sum of the absolute values of the linear combination of the coefficients. The model automatically performs feature selection by minimizing this cost. | `var` (starting variance), `seed`                                                                                                                                   |
+| Gradient boosting machines      | Gradient boosting machines is a boosting ensemble technique and in our framework it combines multiple decision trees. Boosting works by iteratively adding decision trees but adds more weight to the data-points that are misclassified by prior decision trees in the cost function when training the next tree.                                                                                                                                                                                                    | `ntree` (number of trees), `max depth` (max levels in tree), `min rows` (minimum data points in in node), `learning rate`, `balance` (balance class labels), `seed` |
+
+Furthermore, we have to decide on the **covariates** that we will use to train our model. In our example, we add covariates such as _**TODO: Insert covariates**_
+
+[comment]: <> (Gender, Age, Conditions, Drugs Groups, and Visit Count.)
+[comment]: <> (We also have to specify in which time windows we will look and we decide to look in year before and any time prior. )
 
 ## Study implementation
-Loren ipsum
+Now we have completely design our study we have to implement the study. We have to generate the target and outcome cohorts and we need to develop the R code to run against our MIMIC-III database that will execute the full study.
 
 ### Cohort instantiation
+In order to load our cohorts, we leverage some of the work by generating the SQL script with [ATLAS](#atlas-cohort-builder).
+
+#### ATLAS cohort builder
 Loren ipsum
 
-### ATLAS cohort builder
-Loren ipsum
+#### Database connection
+After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with out database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
+```{r echo=F results='hide'}
+base_path = '/home/ohdsi'
+driver_path = paste0(base_path, '/drivers')
+
+DatabaseConnector::downloadJdbcDrivers(
+  dbms='postgresql',
+  pathToDriver = driver_path
+)
+```
+
+Lastly we move our working directory and set some environment variables:
+```{r echo=F results='hide'}
+Sys.setenv(DATABASECONNECTOR_JAR_FOLDER=driver_path)
+
+expected_wd = paste0(base_path, '/workdir/src')
+if (getwd() != expected_wd){
+  setwd(cat(getwd(), '/workdir/src/'))  
+}
+```
+
+Then, we can stablish a connection with our MIMIC-III database as follows:
+```{r echo=T}
+input_schema = 'CDM_SCHEMA'
+output_schema = 'COHORT_SCHEMA'
+
+connectionDetails = DatabaseConnector::createConnectionDetails(
+  dbms='postgresql',  
+  user='postgres', 
+  password='supersecret',
+  server='localhost/ohdsi',
+  port=5432,
+  extraSettings='ssl=true;',
+  pathToDriver=Sys.getenv('DATABASECONNECTOR_JAR_FOLDER')
+)
+
+connection = DatabaseConnector::connect(connectionDetails)
+DatabaseConnector::dbListTables(connection, schema=input_schema)
+```
+
+_Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
+
+
+#### Loading cohorts
+Furthermore we proceeds as follows in order to load the target cohort:
+```{r echo=T}
+sql = SqlRender::readSql('targetCohort.sql')
+sql = SqlRender::render(
+  sql, 
+  input_schema=input_schema, 
+  output_schema=output_schema
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+
+SqlRender::executeSql(connection, sql)
+```
+
+Then, we repeat this process with the outcome cohort:
+```{r echo=T}
+sql = SqlRender::readSql('outcomeCohort.sql')
+sql = SqlRender::render(
+  sql, 
+  input_schema=input_schema, 
+  output_schema=output_schema
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+
+SqlRender::executeSql(connection, sql)
+```
+
+Lastly we can check our cohort generation with the following R code:
+```{r echo=T}
+sql = paste(
+  'SELECT cohort_definition_id, COUNT(*) AS count',
+  'FROM @output_schema.@cohort_table',
+  'GROUP BY cohort_definition_id'
+)
+sql = SqlRender::render(
+  sql, 
+  output_schema=output_schema, 
+  cohort_table='cohorts_of_interest'
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+SqlRender::querySql(connection, sql)
+```
+
+And we can view some entries with the following R code:
+```{r echo=T}
+sql = paste('SELECT * FROM @output_schema.@cohort_table LIMIT 5')
+sql = SqlRender::render(
+  sql, 
+  output_schema=output_schema, 
+  cohort_table='cohorts_of_interest'
+)
+sql = SqlRender::translate(sql, targetDialect=connectionDetails$dbms)
+SqlRender::querySql(connection, sql)
+```
 
 ### Study script creation
 Loren ipsum

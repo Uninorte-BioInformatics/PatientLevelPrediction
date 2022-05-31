@@ -8,7 +8,7 @@ output: html_document
 # Introduction
 Loren ipsum
 
-# System specification
+# Running configuration
 In this section we present a form of executing this vignette, by configuring a Docker in your local machine or in a Virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:
 - If you are using a VM in the cloud you need to connect to it via SSH and establish a SSH tunnel using `ssh -L <local_port>:localhost:8787 <vm_user>@<vm_ip>`.
 - Install [Docker Engine](https://docs.docker.com/engine/install/) if not installed.
@@ -43,12 +43,19 @@ Furthermore, we have to decide on the **covariates** that we will use to train o
 Now we have completely design our study we have to implement the study. We have to generate the target and outcome cohorts and we need to develop the R code to run against our MIMIC-III database that will execute the full study.
 
 ### Cohort instantiation
-In order to load our cohorts, we leverage some of the work by generating the SQL script with [ATLAS](#atlas-cohort-builder).
+In order to load our cohorts, we leverage some of the work by generating the SQL script with [ATLAS](#atlas-cohort-builder). The result table would have the following structure:
 
-#### ATLAS cohort builder
+| **Column**             | **Description**                                                                                             |
+|------------------------|-------------------------------------------------------------------------------------------------------------|
+| `cohort_definition_id` | A unique identifier for distinguishing between different types of cohorts, e.g. target and outcome cohorts. |
+| `subject_id`           | A unique identifier corresponding to the person_id in the CDM.                                              |
+| `cohort_start_date`    | The date the subject enters the cohort.                                                                     |
+| `cohort_end_date`      | The date the subject leaves the cohort.                                                                     |
+
+### ATLAS cohort builder
 Loren ipsum
 
-#### Database connection
+### Database connection
 After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with out database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
 ```{r echo=F results='hide'}
 base_path = '/home/ohdsi'
@@ -92,7 +99,7 @@ DatabaseConnector::dbListTables(connection, schema=input_schema)
 _Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
 
 
-#### Loading cohorts
+### Loading cohorts
 Furthermore, we proceeds as follows in order to load the target cohort:
 ```{r echo=T}
 sql = SqlRender::readSql('targetCohort.sql')

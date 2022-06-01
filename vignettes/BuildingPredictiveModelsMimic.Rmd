@@ -41,7 +41,8 @@ Consequently, it's key to work on the standardization process of developing, cre
 Thus, this work describes how the [PatientLevelPrediction package](https://ohdsi.github.io/PatientLevelPrediction/) can be used for building patient-level predictive models. It's worth noticing that this package provides powerful tools that allow data extraction, covariates generation for building a model and also allows us to test it using data from [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) which currently isn't only the largest EHR database but also is the most suitable for these kind of predictive models.
 
 # Running configuration
-In this section we present a form of executing this vignette, by configuring a Docker container in your local machine or in a Virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in the [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:
+
+In this section, we present a form of executing this vignette by configuring a Docker container in your local or virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in the [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:
 - If you are using a VM in the cloud you need to connect to it via SSH and establish a SSH tunnel using `ssh -L <local_port>:localhost:8787 <vm_user>@<vm_ip>`.
 - Install [Docker Engine](https://docs.docker.com/engine/install/) if not installed.
 - Clone the [OHDSI/PatientLevelPrediction](https://github.com/OHDSI/PatientLevelPrediction) repository.

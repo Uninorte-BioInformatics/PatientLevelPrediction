@@ -354,7 +354,7 @@ DatabaseConnector::disconnect(connection)
 In this section, we will explain how to continue the R script that will execute our study as we have defined previously. Remember that our cohorts have been created by using [ATLAS](#atlas-cohort-builder).
 
 ### Data extraction
-Other inclusion criteria can also be defined to extract the relevant characteristics, for which we use the createCovariateSettings method, which we can find more information in the [following link](https://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html) 
+Other inclusion criteria can also be defined to extract the relevant characteristics, for which we use the createCovariateSettings method, which we can find more information in the [following link](https://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html).
 
 ```{r}
 covariateSettings <- FeatureExtraction::createCovariateSettings(

@@ -6,7 +6,38 @@ output: html_document
 ---
 
 # Introduction
-Loren ipsum
+
+In health care, the clinical characterization of the progress of diseases, the analysis of the effect and behavior of medication consumption and the prediction of patient outcome is a fundamental step to save lives, improve the efficiency in the provision of the service and failing that, reduce the costs incurred. Therefore, being able to accurately forecast what will happen to patients, at scale, is key to improving the health of the population and of individual patients.
+
+The prediction problem addressed in this vignette is associated with the population at risk. The main goal is to predict which patients at a defined time (t = 0) will die at some previously established time at risk. The prediction is made using only information from patients belonging to an observation window of at least 365 days prior to the time of risk. For extension of the prediction problem that we are going to address, the figure below illustrates it.
+
+
+<center>
+![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/observation_period_rxjloz.png)
+</center>
+
+
+As shown in the figure below, to define a prediction problem, the first thing that must be defined is an initial time from which the data will be taken to generate the target cohort (T), then it must be defined the outcome we would like to predict by a cohort of outcomes (O) and time at risk (TAR). Then, once it is defined, the information must be crossed between the target cohort (T) and the results cohort (O), in such a way that the input information for the model and the prediction technique that can be obtained can be obtained. Let's select Note that those cases belonging to the outcome cohort (O) that have occurred during the observation period should be excluded from the model because they can cause problems in the prediction of the model design.
+
+<center>
+
+![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050926/MIMIC-III/prediction_problem_xqiirw.png)
+
+</center>
+
+<center>
+
+
+![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/target_outcome_xykdtj.png)
+
+</center>
+
+
+It is very important to develop as researchers the ability to take advantage of large databases such as clinical patient records (also known as EHR, or Electronic Health Record), signals, laboratory tests, referrals to hospitals, among others. So that, through analysis and machine learning techniques, driven by a massive increase in computational power, unprecedented opportunities are opened to improve patient care and, where appropriate, to save as many lives as possible
+
+Due to the above, it is key to work on the standardization process of prediction models development and presentation, so that researchers may focus on the results and the analysis of model and not mainly on the programming itself. Therefore, it is decided to create this vignette, which gives a practical guide to creating prediction models based on the information stored in the MIMIC III database, using powerful tools such as ATLAS that save a lot of time for information extraction that it is needed to arm the cohorts.
+
+Thus, this work describes how the “PatientLevelPrediction” package can be used for building patient-level predictive models. This package provides powerful tools that allow data extraction, characteristics model building, and evaluation using data from MIMIC-III databases which is currently not only the largest EHR database but also the one suitable for these Models.
 
 # Running configuration
 In this section we present a form of executing this vignette, by configuring a Docker container in your local machine or in a Virtual Machine (VM) in the cloud. We assume that you have access, locally or in the cloud, to the [MIMIC-III Clinical Database](https://physionet.org/content/mimiciii/1.4/) in the [OMOP Common Data Model (CDM)](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html) format, thus we proceed as follows:

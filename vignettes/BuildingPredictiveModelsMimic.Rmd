@@ -136,19 +136,19 @@ In order to load our cohorts, we leverage some of the work by generating the SQL
 
 Firstly, go to [ATLAS atlas.ohdsi.org](https://atlas.ohdsi.org/#/home) in production, where you are asked to be logged in, select "Sign in" at the top right or log in at the center of the page.
 
-![Figure 1: production environment](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_1_p0lo6c.png){width=100%}
+![Figure 1: production environment](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_1_p0lo6c.png)
 
 Then, register with a valid Google account to be able to continue on the platform.
 
-![Figure 2: production environment - Register User](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_2_gxu67h.png){width=100%}
+![Figure 2: production environment - Register User](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_2_gxu67h.png)
 
 Once inside ATLAS, it is verified that we are in the **Cohort Definitions** section in the menu on the left.
 
-![Figure 3: production environment - Cohort Definitions](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_3_ul5lgl.png){width=100%}
+![Figure 3: production environment - Cohort Definitions](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_3_ul5lgl.png)
 
 In the **filter text box** at the top right, filter by the name of the cohort or a keyword that allows us to find the cohort that is required. In this study we do it with the word **heart**. As shown in the figure below.
 
-![Figure 4: production environment - Filter](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_3_2_jpxkx9.png){width=100%}
+![Figure 4: production environment - Filter](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_3_2_jpxkx9.png)
 
 **Prevalent heart disease** is selected from the filtered options for this investigation.
 
@@ -156,30 +156,31 @@ In the **filter text box** at the top right, filter by the name of the cohort or
 
 After selecting the filters, when the **Definition** tab  appears, we go to the **Export** tab and within it select **JSON** and we mark **Copy to clipboard** to have it in memory as shown in the following image:
 
-![Figure 6: production environment - Copy JSON](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_6_2_ftfyaa.png){width=100%}
+![Figure 6: production environment - Copy JSON](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_6_2_ftfyaa.png)
 Once the data is copied into memory as a template, it is passed to [ATLAS DEMO atlas-demo.ohdsi.org](https://atlas-demo.ohdsi.org/#/home) where its own cohort is created based on the template data that we brought.
 
 In this platform it is not necessary to be registered, so we directly select **Cohort Definitions**.
 
-![Figure 7: demo environment - Cohort Definitions (New Cohort)](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_7_2_wiwgzk.png){width=100%}
+![Figure 7: demo environment - Cohort Definitions (New Cohort)](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_7_2_wiwgzk.png)
 
 In this demo section we can create our own cohort by selecting **New Cohort**
 
-![Figure 8: demo environment - New Cohort](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_8_2_h4ttys.png){width=100%}
+![Figure 8: demo environment - New Cohort](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_8_2_h4ttys.png)
 
 At this point we go to **Export** within this **JSON** tab and paste what was copied into the production environment to serve as a template and mark **Reload**.
 
-![Figure 9: demo environment - Reload](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_9_2_dzhsvq.png){width=100%}
+![Figure 9: demo environment - Reload](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_9_2_dzhsvq.png)
 
 With the template already copied, we proceed to name it as considered according to the study that is being carried out and we add the initial events and the attributes of the cohort that is being configured for its subsequent application.
 
-![Figure 10: demo environment - Save new cohort](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_10_2_bxhob0.png){width=100%}
+![Figure 10: demo environment - Save new cohort](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_10_2_bxhob0.png)
+
 
 After configuring the previous characteristics and properly naming the new cohort, it is saved in the disk button on the right side of the text box where the name was written.
 
 Once the above is done, we go to the **Export** tab, then **SQL**, then **Template OHDSI.SQL** and copy the SQL content to take it to our **RStudio** and paste it into a file with .sql that will be taken into our model application.
 
-![Figure 11: demo environment - Copy SQL](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_demo_11_2_psxxaz.png){width=100%}
+![Figure 11: demo environment - Copy SQL](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_demo_11_2_psxxaz.png)
 
 In the present study, the [Target Cohort](https://atlas-demo.ohdsi.org/#/cohortdefinition/1779448) were defined as described in the previous images and the [Outcome Cohort](https://atlas- demo.ohdsi.org/#/cohortdefinition/1770232) found in the DEMO environment at these respective links.
 

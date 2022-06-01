@@ -496,6 +496,39 @@ lrResults <- PatientLevelPrediction::runPlp(
 
 
 ### Result analysis
+
+As a starter, we get the following confunsion matrix for the Lasso model:
+
+|                        | **Ground Truth Negative** | **Ground Truth Positive** |
+|:-----------------------|--------------------------:|--------------------------:|
+| **Predicted Positive** | 44                        | 357                       |
+| **Predicted Negative** | 239                       | 319                       |
+
+
+Furthermore, we also have the following confusion matrix for the XGBoost model:
+
+|                        | **Ground Truth Negative** | **Ground Truth Positive** |
+|:-----------------------|--------------------------:|--------------------------:|
+| **Predicted Positive** | 54                        | 420                       |
+| **Predicted Negative** | 229                       | 256                       |
+
+In addition, we can compute the following metrics from each confusion matrix:
+
+| **Metric**      | **Lasso Model Value** | **XGBoost Model Value** |
+|:----------------|:---------------------:|:-----------------------:|
+| **Threshold**   | 0.849                 | 0.805                   |
+| **Specificity** | 84.5%                 | 80.9%                   |
+| **Incidence**   | 70.49%                | 70.49%                  |
+| **Sensitivity** | 52.8%                 | 62.1%                   |
+| **PPV**         | 89%                   | 88.6%                   |
+| **NPV**         | 42.8%                 | 47.2%                   |
+
+As a initial observation, we notice that both models behave pretty simlar since we get little to no difference regarding the model performance.
+
+We can notice that we get the same incidence on each model, which makes sense since this metric talks about the amount of pacients affected which in both models should remain the same. 
+
+Also, we can also notice that the specificity and the sensitivity are related in a inversed ratio since we noticed how one variable directly affects the ratio from the other one. This makes sense since in this case the specificity talks about the pacient survival rate (avoinding the outcome when it really din't have the outcome) and the sensitivity talks about the death rate (Since it talks about presenting the outcome when it should).
+
 ```{r}
 library(PatientLevelPrediction)
 library(dplyr)

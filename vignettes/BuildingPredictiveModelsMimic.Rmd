@@ -52,9 +52,11 @@ In this section, we present a form of executing this vignette by configuring a D
   - **Username:** ohdsi
   - **Password:** ohdsi
 - We are using `PatientLevelPrediction` version 5.0.5, you can check the version of `PatientLevelPrediction` package by running `packageVersion('PatientLevelPrediction')` on the rstudio console. If you have a version mismatch run the following commands:
-  - `install.packages('remotes')`.
-  - `remotes::install_github('OHDSI/FeatureExtraction')`.
-  - `remotes::install_github('OHDSI/PatientLevelPrediction')`.
+  ```
+    install.packages('remotes')
+    remotes::install_github('OHDSI/FeatureExtraction')
+    remotes::install_github('OHDSI/PatientLevelPrediction')
+  ```
   - If a confirmation is needed, press enter.
   - Restart the rstudio session.
 - On the file explorer, search for `vignettes/BuildingPredictiveModelsMimic.Rmd` file and run it.

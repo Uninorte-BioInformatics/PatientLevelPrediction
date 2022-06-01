@@ -213,6 +213,8 @@ if (getwd() != expected_wd){
 }
 ```
 
+_* Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
+
 In case of requiring more memory use, use the following command to increase the memory to be used by the JDBC drivers:
 ```{r}
 options(java.parameters = "-Xmx2000m")
@@ -238,8 +240,6 @@ connectionDetails = DatabaseConnector::createConnectionDetails(
 connection = DatabaseConnector::connect(connectionDetails)
 DatabaseConnector::dbListTables(connection, schema = cdm_database_schema)
 ```
-
-_Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
 
 ### Loading cohorts
 Firstly, we need to create the cohort table:

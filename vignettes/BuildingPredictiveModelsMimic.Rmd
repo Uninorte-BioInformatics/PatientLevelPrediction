@@ -191,7 +191,7 @@ It should be noted that for the **Outcome Cohort**, the procedure is the same as
 
 ### Database connection
 After we have got the SQL script from ATLAS, it's worth noticing that prior to stablishing a connection with our database we need have a JDBC driver, we can download the driver for postgres by running the following R code:
-```{r echo=F results='hide'}
+```{r echo=F, results='hide'}
 base_path = '/home/ohdsi'
 driver_path = paste0(base_path, '/drivers')
 
@@ -202,7 +202,7 @@ DatabaseConnector::downloadJdbcDrivers(
 ```
 
 Due to downloading the driver, among other reasons, we move our working directory and set some environment variables:
-```{r echo=F results='hide'}
+```{r echo=F, results='hide'}
 Sys.setenv(DATABASE_CONNECTOR_JAR_FOLDER = driver_path)
 Sys.setenv(DATABASE_SERVER = 'localhost/ohdsi')
 Sys.setenv(DATABASE_PWD = 'supersecret')
@@ -216,12 +216,12 @@ if (getwd() != expected_wd){
 _* Note: We hid our host and password fields with default values in order to block access to our MIMIC-III Database._
 
 In case of requiring more memory use, use the following command to increase the memory to be used by the JDBC drivers:
-```{r}
+```{r echo=F, results='hide'}
 options(java.parameters = "-Xmx2000m")
 ```
 
 Then, we can establish a connection with our MIMIC-III database as follows:
-```{r echo=T}
+```{r echo=F, results='hide'}
 cdm_database_schema = 'omop'
 target_database_schema = 'omop'
 target_cohort_table = 'atlas_cohorts'
@@ -243,7 +243,7 @@ DatabaseConnector::dbListTables(connection, schema = cdm_database_schema)
 
 ### Loading cohorts
 Firstly, we need to [create the cohort table](https://gist.github.com/demarchenac/cddd3cab8f1938173042106a6323ebd1):
-```{r echo=T}
+```{r echo=F, results='hide'}
 dir.create(file.path(getwd(), 'atlas_cohorts'), showWarnings = FALSE)
 download.file(
   'https://gist.githubusercontent.com/demarchenac/cddd3cab8f1938173042106a6323ebd1/raw/96e774c2fa38ef7bdcada137cf57c636ed9670a2/reset_cohorts.sql',
@@ -264,7 +264,7 @@ DatabaseConnector::executeSql(connection, sql)
 ```
 
 Furthermore, we proceed as follows in order to load the [target cohort](https://gist.github.com/demarchenac/a13e3b4832febcfe2203159560d90106):
-```{r echo=T}
+```{r echo=F, results='hide'}
 download.file(
   'https://gist.githubusercontent.com/demarchenac/a13e3b4832febcfe2203159560d90106/raw/03ec3f7854d495eb1e184487db13622bfd5cb6ef/target_cohort.sql', 
   file.path(getwd(), 'atlas_cohorts', 'target_cohort.sql')
@@ -290,7 +290,7 @@ DatabaseConnector::executeSql(connection, sql)
 ```
 
 Then, we repeat this process with the [outcome cohort](https://gist.github.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7):
-```{r echo=T}
+```{r echo=F, results='hide'}
 download.file(
   'https://gist.githubusercontent.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7/raw/5e6dfbea6d95faf744e6ad8d122c4807cf668562/outcome_cohort.sql', 
   file.path(getwd(), 'atlas_cohorts', 'outcome_cohort.sql')
@@ -315,7 +315,7 @@ DatabaseConnector::executeSql(connection, sql)
 ```
 
 In addition, we can check our cohort generation with the following R code:
-```{r echo=T}
+```{r echo=F, results='hide'}
 sql = paste(
   'SELECT cohort_definition_id, COUNT(*) AS count',
   'FROM @output_schema.@cohort_table',
@@ -334,7 +334,7 @@ DatabaseConnector::querySql(connection, sql)
 ```
 
 And we can view some entries with the following R code:
-```{r echo=T}
+```{r echo=F, results='hide'}
 sql = paste('SELECT * FROM @output_schema.@cohort_table LIMIT 5')
 
 sql = SqlRender::render(
@@ -356,7 +356,7 @@ In this section, we will explain how to continue the R script that will execute 
 ### Data extraction
 Other inclusion criteria can also be defined to extract the relevant characteristics, for which we use the createCovariateSettings method, which we can find more information in the [following link](https://ohdsi.github.io/FeatureExtraction/reference/createCovariateSettings.html).
 
-```{r}
+```{r echo=F, results='hide'}
 covariateSettings <- FeatureExtraction::createCovariateSettings(
   useDemographicsGender = TRUE,
   useDemographicsAge = TRUE,
@@ -385,7 +385,7 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(
 ```
 
 Create a configuration that contains the details about the cdmDatabase connection for data extraction, for more information see [how to create database details](https://ohdsi.github.io/PatientLevelPrediction/reference/createDatabaseDetails.html).
-```{r}
+```{r echo=F, results='hide'}
 databaseDetails <- PatientLevelPrediction::createDatabaseDetails(
   connectionDetails = connectionDetails,
 	cdmDatabaseSchema = cdm_database_schema,
@@ -402,14 +402,14 @@ databaseDetails <- PatientLevelPrediction::createDatabaseDetails(
 
 We restrict the sample size if we do not feel we have enough computing power or if we only want to run a small sample:
 	
-```{r}
+```{r echo=F, results='hide'}
 restrictPlpDataSettings <- PatientLevelPrediction::createRestrictPlpDataSettings(sampleSize = 100000)
 ```
 
 This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis, for more information see [how to obtain PLP data](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
 Once the necessary data has been extracted, we save it in case we want to replicate the example:
 
-```{r}
+```{r echo=F, results='hide'}
 dir.create(file.path(getwd(), 'atlas_plp_data'), showWarnings = FALSE)
 
 plpData <- PatientLevelPrediction::getPlpData(
@@ -423,7 +423,7 @@ PatientLevelPrediction::savePlpData(plpData, file.path(getwd(), 'atlas_plp_data'
 
 ### Additional inclusion criteria
 The configuration for the study population is created, which details information such as the start and end of the cut, risk window and the outcome. For more information about the method you can read it's [documentation](https://www.rdocumentation.org/packages/PatientLevelPrediction/versions/4.3.10/topics/createStudyPopulationSettings). 
-```{r}
+```{r echo=F, results='hide'}
 populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
   washoutPeriod = 0,
 	firstExposureOnly = TRUE,
@@ -441,7 +441,7 @@ populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
 
 ### Spliting the data into training/validation/testing datasets
 Continuing with the steps for model training, we divide the data into training, validation and test sets, this with the values defined for cross-validation.
-```{r}
+```{r echo=F, results='hide'}
 splitSettings <- PatientLevelPrediction::createDefaultSplitSetting(
   trainFraction = 0.75,
 	testFraction = 0.25,
@@ -455,7 +455,7 @@ splitSettings <- PatientLevelPrediction::createDefaultSplitSetting(
  
 It was used the default sample settings. it simply returns the trainData as input, see below: 
 
-```{r tidy=FALSE, eval=FALSE}
+```{r echo=F, results='hide'}
 sampleSettings <- PatientLevelPrediction::createSampleSettings()
 ```
 
@@ -463,13 +463,13 @@ However, the current package contains methods of under-sampling the non-outcome 
 
 It is possible to specify a combination of feature engineering functions that take as input the trainData and output a new trainData with different features.  The default feature engineering setting does nothing:
 
-```{r tidy=FALSE, eval=FALSE}
+```{r echo=F, results='hide'}
 featureEngineeringSettings <- PatientLevelPrediction::createFeatureEngineeringSettings()
 ```
 
 Finally, the preprocessing settings.  For this setting it was defined `minFraction = 0.01`, this removes any features that is observed in the training data for less than 0.01 fraction of the patients. The input `normalize = T` specifies whether the features are scaled between 0 and 1.  The input `removeRedundancy = T` specifies whether features that are observed in all of the target population are removed.
 
-```{r tidy=FALSE, eval=FALSE}
+```{r echo=F, results='hide'}
 preprocessSettings <- PatientLevelPrediction::createPreprocessSettings(
 	minFraction = 0.01, 
 	normalize = T, 
@@ -486,13 +486,13 @@ For the algorithm selection with considered two options:
 - [setGradientBoostingMachine](https://ohdsi.github.io/PatientLevelPrediction/reference/setGradientBoostingMachine.html) : [Gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) is a machine learning technique used in regression and classification tasks, among others. It gives a prediction model in the form of an ensemble of weak prediction models, which are typically decision trees.
 
 For our problem we choose to build a logistic regression model with the default hyper-parameters
-```{r tidy=TRUE, eval=FALSE}
+```{r echo=F, results='hide'}
 lrModel <- PatientLevelPrediction::setLassoLogisticRegression()
 ```
 
 For the gradient boosting machines model it was used the hyper-parameters explained in [vignette for building patient-level predictive models](https://github.com/OHDSI/PatientLevelPrediction/blob/main/inst/doc/BuildingPredictiveModels.pdf).
 
-```{r tidy=TRUE, eval=FALSE}
+```{r echo=F, results='hide'}
 lrModel <- PatientLevelPrediction::setGradientBoostingMachine(
   ntrees = 5000, 
   maxDepth = c(4, 7, 10), 
@@ -502,7 +502,7 @@ lrModel <- PatientLevelPrediction::setGradientBoostingMachine(
 
 The `runPlP` function requires the `plpData`, the `outcomeId` specifying the outcome being predicted and the settings: `populationSettings`, `splitSettings`, `sampleSettings`, `featureEngineeringSettings`, `preprocessSettings` and `modelSettings` to train and evaluate the model. 
 
-```{r tidy=FALSE, eval=FALSE}
+```{r echo=F, results='hide'}
 dir.create(file.path(getwd(), 'atlas_plp_model'), showWarnings = FALSE)
 
 lrResults <- PatientLevelPrediction::runPlp(
@@ -533,7 +533,7 @@ lrResults <- PatientLevelPrediction::runPlp(
 ### Result analysis
 Running the following R code block we can review the results of a given model:
 
-```{r}
+```{r echo=F, results='hide'}
 library(PatientLevelPrediction)
 library(dplyr)
 viewPlp(lrResults)

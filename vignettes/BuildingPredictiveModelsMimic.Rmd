@@ -384,7 +384,7 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(
 )
 ```
 
-Create a configuration that contains the details about the cdmDatabase connection for data extraction, for [more information](https://ohdsi.github.io/PatientLevelPrediction/reference/createDatabaseDetails.html) 
+Create a configuration that contains the details about the cdmDatabase connection for data extraction, for more information see [how to create database details](https://ohdsi.github.io/PatientLevelPrediction/reference/createDatabaseDetails.html).
 ```{r}
 databaseDetails <- PatientLevelPrediction::createDatabaseDetails(
   connectionDetails = connectionDetails,
@@ -406,7 +406,7 @@ We restrict the sample size if we do not feel we have enough computing power or 
 restrictPlpDataSettings <- PatientLevelPrediction::createRestrictPlpDataSettings(sampleSize = 100000)
 ```
 
-This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis [more info](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
+This function executes a large set of SQL statements against the database in OMOP CDM format to extract the data needed to perform the analysis, for more information see [how to obtain PLP data](https://rdrr.io/github/OHDSI/PatientLevelPrediction/man/getPlpData.html).
 Once the necessary data has been extracted, we save it in case we want to replicate the example:
 
 ```{r}
@@ -422,7 +422,7 @@ PatientLevelPrediction::savePlpData(plpData, file.path(getwd(), 'atlas_plp_data'
 ```
 
 ### Additional inclusion criteria
-The configuration for the study population is created, which details information such as the start and end of the cut, risk window and the outcome. For more information about the method you can read its [documentation](https://www.rdocumentation.org/packages/PatientLevelPrediction/versions/4.3.10/topics/createStudyPopulationSettings). 
+The configuration for the study population is created, which details information such as the start and end of the cut, risk window and the outcome. For more information about the method you can read it's [documentation](https://www.rdocumentation.org/packages/PatientLevelPrediction/versions/4.3.10/topics/createStudyPopulationSettings). 
 ```{r}
 populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
   washoutPeriod = 0,
@@ -565,7 +565,7 @@ In addition, we can compute the following metrics from each confusion matrix:
 | **PPV**         | 89%                   | 88.6%                   |
 | **NPV**         | 42.8%                 | 47.2%                   |
 
-As a initial observation, we notice that both models behave pretty simlar since we get little to no difference regarding the model performance.
+As an initial observation, we notice that both models behave pretty simlar since we get little to no difference regarding the model performance.
 
 We can notice that we get the same incidence on each model, which makes sense since this metric talks about the amount of pacients affected which in both models should remain the same. 
 

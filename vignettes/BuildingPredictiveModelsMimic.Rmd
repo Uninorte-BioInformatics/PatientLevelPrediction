@@ -196,8 +196,8 @@ base_path = '/home/ohdsi'
 driver_path = paste0(base_path, '/drivers')
 
 DatabaseConnector::downloadJdbcDrivers(
-  dbms = 'postgresql',
-  pathToDriver = driver_path
+  	dbms = 'postgresql',
+  	pathToDriver = driver_path
 )
 ```
 
@@ -209,7 +209,7 @@ Sys.setenv(DATABASE_PWD = 'supersecret')
 
 expected_wd = paste0(base_path, '/workdir/vignettes')
 if (getwd() != expected_wd){
-  setwd(cat(getwd(), '/workdir/vignettes/'))  
+  	setwd(cat(getwd(), '/workdir/vignettes/'))  
 }
 ```
 
@@ -228,13 +228,13 @@ target_cohort_table = 'atlas_cohorts'
 database_name = 'mimic'
 
 connectionDetails = DatabaseConnector::createConnectionDetails(
-  dbms = 'postgresql',  
-  user = 'postgres',
-  password = Sys.getenv('DATABASE_PWD'),
-  server = Sys.getenv('DATABASE_SERVER'),
-  port = 5432,
-  extraSettings = 'ssl=true;',
-  pathToDriver = Sys.getenv('DATABASE_CONNECTOR_JAR_FOLDER')
+	  dbms = 'postgresql',  
+	  user = 'postgres',
+	  password = Sys.getenv('DATABASE_PWD'),
+	  server = Sys.getenv('DATABASE_SERVER'),
+	  port = 5432,
+	  extraSettings = 'ssl=true;',
+	  pathToDriver = Sys.getenv('DATABASE_CONNECTOR_JAR_FOLDER')
 )
 
 connection = DatabaseConnector::connect(connectionDetails)
@@ -246,16 +246,16 @@ Firstly, we need to [create the cohort table](https://gist.github.com/demarchena
 ```{r echo=F, results='hide'}
 dir.create(file.path(getwd(), 'atlas_cohorts'), showWarnings = FALSE)
 download.file(
-  'https://gist.githubusercontent.com/demarchenac/cddd3cab8f1938173042106a6323ebd1/raw/96e774c2fa38ef7bdcada137cf57c636ed9670a2/reset_cohorts.sql',
-  file.path(getwd(), 'atlas_cohorts', 'reset_cohorts.sql')
+	  'https://gist.githubusercontent.com/demarchenac/cddd3cab8f1938173042106a6323ebd1/raw/96e774c2fa38ef7bdcada137cf57c636ed9670a2/reset_cohorts.sql',
+	  file.path(getwd(), 'atlas_cohorts', 'reset_cohorts.sql')
 )
 
 sql = SqlRender::readSql(file.path(getwd(), 'atlas_cohorts', 'reset_cohorts.sql'))
 
 sql = SqlRender::render(
-  sql, 
-  cdm_database_schema = cdm_database_schema, 
-  cohort_table = target_cohort_table
+	  sql, 
+	  cdm_database_schema = cdm_database_schema, 
+	  cohort_table = target_cohort_table
 )
 
 sql = SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
@@ -266,19 +266,19 @@ DatabaseConnector::executeSql(connection, sql)
 Furthermore, we proceed as follows in order to load the [target cohort](https://gist.github.com/demarchenac/a13e3b4832febcfe2203159560d90106):
 ```{r echo=F, results='hide'}
 download.file(
-  'https://gist.githubusercontent.com/demarchenac/a13e3b4832febcfe2203159560d90106/raw/03ec3f7854d495eb1e184487db13622bfd5cb6ef/target_cohort.sql', 
-  file.path(getwd(), 'atlas_cohorts', 'target_cohort.sql')
+	  'https://gist.githubusercontent.com/demarchenac/a13e3b4832febcfe2203159560d90106/raw/03ec3f7854d495eb1e184487db13622bfd5cb6ef/target_cohort.sql', 
+	  file.path(getwd(), 'atlas_cohorts', 'target_cohort.sql')
 )
 
 sql = SqlRender::readSql(file.path(getwd(), 'atlas_cohorts', 'target_cohort.sql'))
 
 sql = SqlRender::render(
-  sql, 
-  cdm_database_schema = cdm_database_schema, 
-  target_cohort_table = target_cohort_table,
-  target_database_schema = target_database_schema,
-  vocabulary_database_schema = cdm_database_schema,
-  target_cohort_id = '4'
+	  sql, 
+	  cdm_database_schema = cdm_database_schema, 
+	  target_cohort_table = target_cohort_table,
+	  target_database_schema = target_database_schema,
+	  vocabulary_database_schema = cdm_database_schema,
+	  target_cohort_id = '4'
 )
 
 # Manually replace codesets
@@ -292,18 +292,18 @@ DatabaseConnector::executeSql(connection, sql)
 Then, we repeat this process with the [outcome cohort](https://gist.github.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7):
 ```{r echo=F, results='hide'}
 download.file(
-  'https://gist.githubusercontent.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7/raw/5e6dfbea6d95faf744e6ad8d122c4807cf668562/outcome_cohort.sql', 
-  file.path(getwd(), 'atlas_cohorts', 'outcome_cohort.sql')
+	  'https://gist.githubusercontent.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7/raw/5e6dfbea6d95faf744e6ad8d122c4807cf668562/outcome_cohort.sql', 
+	  file.path(getwd(), 'atlas_cohorts', 'outcome_cohort.sql')
 )
 
 sql = SqlRender::readSql(file.path(getwd(), 'atlas_cohorts', 'outcome_cohort.sql'))
 
 sql = SqlRender::render(
-  sql, 
-  cdm_database_schema = cdm_database_schema, 
-  target_cohort_table = target_cohort_table,
-  target_database_schema = target_database_schema,
-  target_cohort_id = '3'
+	  sql, 
+	  cdm_database_schema = cdm_database_schema, 
+	  target_cohort_table = target_cohort_table,
+	  target_database_schema = target_database_schema,
+	  target_cohort_id = '3'
 )
 
 # Manually replace codesets
@@ -317,15 +317,15 @@ DatabaseConnector::executeSql(connection, sql)
 In addition, we can check our cohort generation with the following R code:
 ```{r echo=F, results='hide'}
 sql = paste(
-  'SELECT cohort_definition_id, COUNT(*) AS count',
-  'FROM @output_schema.@cohort_table',
-  'GROUP BY cohort_definition_id'
+	  'SELECT cohort_definition_id, COUNT(*) AS count',
+	  'FROM @output_schema.@cohort_table',
+	  'GROUP BY cohort_definition_id'
 )
 
 sql = SqlRender::render(
-  sql, 
-  output_schema = target_database_schema, 
-  cohort_table = target_cohort_table
+	  sql, 
+	  output_schema = target_database_schema, 
+	  cohort_table = target_cohort_table
 )
 
 sql = SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
@@ -338,9 +338,9 @@ And we can view some entries with the following R code:
 sql = paste('SELECT * FROM @output_schema.@cohort_table LIMIT 5')
 
 sql = SqlRender::render(
-  sql, 
-  output_schema = target_database_schema, 
-  cohort_table = target_cohort_table
+	  sql, 
+	  output_schema = target_database_schema, 
+	  cohort_table = target_cohort_table
 )
 
 sql = SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
@@ -358,12 +358,12 @@ Other inclusion criteria can also be defined to extract the relevant characteris
 
 ```{r echo=F, results='hide'}
 covariateSettings <- FeatureExtraction::createCovariateSettings(
-  useDemographicsGender = TRUE,
-  useDemographicsAge = TRUE,
-  useConditionGroupEraLongTerm = TRUE,
-  useConditionGroupEraAnyTimePrior = TRUE,
+  	useDemographicsGender = TRUE,
+  	useDemographicsAge = TRUE,
+  	useConditionGroupEraLongTerm = TRUE,
+  	useConditionGroupEraAnyTimePrior = TRUE,
 	useDrugGroupEraLongTerm = TRUE,
-  useDemographicsRace = TRUE,
+  	useDemographicsRace = TRUE,
 	useConditionOccurrenceAnyTimePrior = TRUE,
 	useConditionOccurrenceLongTerm = TRUE,
 	useConditionOccurrenceMediumTerm = TRUE,
@@ -387,11 +387,11 @@ covariateSettings <- FeatureExtraction::createCovariateSettings(
 Create a configuration that contains the details about the cdmDatabase connection for data extraction, for more information see [how to create database details](https://ohdsi.github.io/PatientLevelPrediction/reference/createDatabaseDetails.html).
 ```{r echo=F, results='hide'}
 databaseDetails <- PatientLevelPrediction::createDatabaseDetails(
-  connectionDetails = connectionDetails,
+  	connectionDetails = connectionDetails,
 	cdmDatabaseSchema = cdm_database_schema,
 	cdmDatabaseName = database_name,
 	cohortDatabaseSchema = target_database_schema,
-  cohortTable = target_cohort_table,
+  	cohortTable = target_cohort_table,
 	cohortId = 4,
 	outcomeDatabaseSchema = target_database_schema,
 	outcomeTable = target_cohort_table,
@@ -413,7 +413,7 @@ Once the necessary data has been extracted, we save it in case we want to replic
 dir.create(file.path(getwd(), 'atlas_plp_data'), showWarnings = FALSE)
 
 plpData <- PatientLevelPrediction::getPlpData(
-  databaseDetails = databaseDetails,
+  	databaseDetails = databaseDetails,
 	covariateSettings = covariateSettings,
 	restrictPlpDataSettings = restrictPlpDataSettings
 )
@@ -425,14 +425,14 @@ PatientLevelPrediction::savePlpData(plpData, file.path(getwd(), 'atlas_plp_data'
 The configuration for the study population is created, which details information such as the start and end of the cut, risk window and the outcome. For more information about the method you can read it's [documentation](https://www.rdocumentation.org/packages/PatientLevelPrediction/versions/4.3.10/topics/createStudyPopulationSettings). 
 ```{r echo=F, results='hide'}
 populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
-  washoutPeriod = 0,
+  	washoutPeriod = 0,
 	firstExposureOnly = TRUE,
 	removeSubjectsWithPriorOutcome = TRUE,
 	priorOutcomeLookback = 99999,
 	riskWindowStart = 1,
 	riskWindowEnd = 90,
 	startAnchor = 'cohort start',
-  endAnchor = 'cohort start',
+  	endAnchor = 'cohort start',
 	minTimeAtRisk = 30,
 	requireTimeAtRisk = TRUE,
 	includeAllOutcomes = TRUE
@@ -443,7 +443,7 @@ populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
 Continuing with the steps for model training, we divide the data into training, validation and test sets, this with the values defined for cross-validation.
 ```{r echo=F, results='hide'}
 splitSettings <- PatientLevelPrediction::createDefaultSplitSetting(
-  trainFraction = 0.75,
+  	trainFraction = 0.75,
 	testFraction = 0.25,
 	type = 'stratified',
 	nfold = 5, 
@@ -494,9 +494,9 @@ For the gradient boosting machines model it was used the hyper-parameters explai
 
 ```{r echo=F, results='hide'}
 lrModel <- PatientLevelPrediction::setGradientBoostingMachine(
-  ntrees = 5000, 
-  maxDepth = c(4, 7, 10), 
-  learnRate = c(0.001, 0.01, 0.1, 0.9)
+  	ntrees = 5000, 
+  	maxDepth = c(4, 7, 10), 
+  	learnRate = c(0.001, 0.01, 0.1, 0.9)
 )
 ```
 
@@ -528,7 +528,6 @@ lrResults <- PatientLevelPrediction::runPlp(
 	saveDirectory = file.path(getwd(), 'atlas_plp_model')
 )
 ```
-
 
 ### Result analysis
 Running the following R code block we can review the results of a given model:

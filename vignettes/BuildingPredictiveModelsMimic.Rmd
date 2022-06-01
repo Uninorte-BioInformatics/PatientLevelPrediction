@@ -185,7 +185,7 @@ Once the above is done, we go to the **Export** tab, then **SQL**, then **Templa
 
 ![Figure 11: demo environment - Copy SQL](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_demo_11_2_psxxaz.png)
 
-In the present study, the [Target Cohort](https://atlas-demo.ohdsi.org/#/cohortdefinition/1779448) were defined as described in the previous images and the [Outcome Cohort](https://atlas- demo.ohdsi.org/#/cohortdefinition/1770232) found in the DEMO environment at these respective links.
+In the present study, the [Target cohort](https://atlas-demo.ohdsi.org/#/cohortdefinition/1779448) were defined as described in the previous images and the [Outcome cohort](https://atlas-demo.ohdsi.org/#/cohortdefinition/1770232) found in the DEMO environment at these respective links.
 
 It should be noted that for the **Outcome Cohort**, the procedure is the same as indicated in the previous steps as in the **Target Cohort**.
 

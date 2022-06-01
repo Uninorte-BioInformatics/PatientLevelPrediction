@@ -242,7 +242,7 @@ DatabaseConnector::dbListTables(connection, schema = cdm_database_schema)
 ```
 
 ### Loading cohorts
-Firstly, we need to create the cohort table:
+Firstly, we need to [create the cohort table](https://gist.github.com/demarchenac/cddd3cab8f1938173042106a6323ebd1):
 ```{r echo=T}
 dir.create(file.path(getwd(), 'atlas_cohorts'), showWarnings = FALSE)
 download.file(
@@ -263,7 +263,7 @@ sql = SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
 DatabaseConnector::executeSql(connection, sql)
 ```
 
-Furthermore, we proceed as follows in order to load the target cohort:
+Furthermore, we proceed as follows in order to load the [target cohort](https://gist.github.com/demarchenac/a13e3b4832febcfe2203159560d90106):
 ```{r echo=T}
 download.file(
   'https://gist.githubusercontent.com/demarchenac/a13e3b4832febcfe2203159560d90106/raw/03ec3f7854d495eb1e184487db13622bfd5cb6ef/target_cohort.sql', 
@@ -289,7 +289,7 @@ sql = SqlRender::translate(sql, targetDialect = connectionDetails$dbms)
 DatabaseConnector::executeSql(connection, sql)
 ```
 
-Then, we repeat this process with the outcome cohort:
+Then, we repeat this process with the [outcome cohort](https://gist.github.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7):
 ```{r echo=T}
 download.file(
   'https://gist.githubusercontent.com/demarchenac/a6908b7a6b390a0dbc4d41265c9b03a7/raw/5e6dfbea6d95faf744e6ad8d122c4807cf668562/outcome_cohort.sql', 

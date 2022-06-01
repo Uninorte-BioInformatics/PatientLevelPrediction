@@ -204,8 +204,8 @@ DatabaseConnector::downloadJdbcDrivers(
 Due to downloading the driver, among other reasons, we move our working directory and set some environment variables:
 ```{r echo=F results='hide'}
 Sys.setenv(DATABASE_CONNECTOR_JAR_FOLDER = driver_path)
-Sys.setenv(DATABASE_SERVER = 'mimic-server.postgres.database.azure.com/mimic') #'localhost/ohdsi'
-Sys.setenv(DATABASE_PWD = 'securepass321.') #'supersecret'
+Sys.setenv(DATABASE_SERVER = 'localhost/ohdsi')
+Sys.setenv(DATABASE_PWD = 'supersecret')
 
 expected_wd = paste0(base_path, '/workdir/vignettes')
 if (getwd() != expected_wd){

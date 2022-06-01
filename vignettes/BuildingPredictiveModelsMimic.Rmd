@@ -34,7 +34,7 @@ Firstly, go to [ATLAS atlas.ohdsi.org](https://atlas.ohdsi.org/#/home) in produc
 
 Then, register with a valid Google account to be able to continue on the platform.
 
-![Figure 2: production environment - Register](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_2_gxu67h.png){width=100%}
+![Figure 2: production environment - Register User](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_2_gxu67h.png){width=100%}
 
 Once inside ATLAS, it is verified that we are in the **Cohort Definitions** section in the menu on the left.
 
@@ -63,17 +63,17 @@ In this demo section we can create our own cohort by selecting **New Cohort**
 
 At this point we go to **Export** within this **JSON** tab and paste what was copied into the production environment to serve as a template and mark **Reload**.
 
-![Figure 9: demo environment - ](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_9_2_dzhsvq.png){width=100%}
+![Figure 9: demo environment - Reload](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_9_2_dzhsvq.png){width=100%}
 
 With the template already copied, we proceed to name it as considered according to the study that is being carried out and we add the initial events and the attributes of the cohort that is being configured for its subsequent application.
 
-![Figure 10: demo environment](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_10_2_bxhob0.png){width=100%}
+![Figure 10: demo environment - Save new cohort](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033084/MIMIC-III/Atlas_demo_10_2_bxhob0.png){width=100%}
 
 After configuring the previous characteristics and properly naming the new cohort, it is saved in the disk button on the right side of the text box where the name was written.
 
 Once the above is done, we go to the **Export** tab, then **SQL**, then **Template OHDSI.SQL** and copy the SQL content to take it to our **RStudio** and paste it into a file with .sql that will be taken into our model application.
 
-![Figure 11: demo environment](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_demo_11_2_psxxaz.png){width=100%}
+![Figure 11: demo environment - Copy SQL](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654033085/MIMIC-III/Atlas_demo_11_2_psxxaz.png){width=100%}
 
 In the present study, the [Target Cohort](https://atlas-demo.ohdsi.org/#/cohortdefinition/1779448) were defined as described in the previous images and the [Outcome Cohort](https://atlas- demo.ohdsi.org/#/cohortdefinition/1770232) found in the DEMO environment at these respective links.
 

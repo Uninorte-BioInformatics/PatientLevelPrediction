@@ -24,3 +24,5 @@ standalone/build/*
 
 #ATLAS Cohort SQL
 vignettes/atlas_cohorts
+vignettes/atlas_plp_data
+vignettes/atlas_plp_model

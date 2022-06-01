@@ -18,6 +18,12 @@ In this section we present a form of executing this vignette, by configuring a D
 - On your browser, access to `http://localhost:8787` and login to rstudio using the following credentials:
   - **Username:** ohdsi
   - **Password:** ohdsi
+- We are using `PatientLevelPrediction` version 5.0.5, you can check the version of `PatientLevelPrediction` package by running `packageVersion('PatientLevelPrediction')` on the rstudio console. If you have a version mismatch run the following commands:
+  - `install.packages('remotes')`.
+  - `remotes::install_github('OHDSI/FeatureExtraction')`.
+  - `remotes::install_github('OHDSI/PatientLevelPrediction')`.
+  - If a confirmation is needed, press enter.
+  - Restart the rstudio session.
 - On the file explorer, search for `vignettes/BuildingPredictiveModelsMimic.Rmd` file and run it.
 
 # Study specification
@@ -369,13 +375,15 @@ This function executes a large set of SQL statements against the database in OMO
 Once the necessary data has been extracted, we save it in case we want to replicate the example:
 
 ```{r}
+dir.create(file.path(getwd(), 'atlas_plp_data'), showWarnings = FALSE)
+
 plpData <- PatientLevelPrediction::getPlpData(
   databaseDetails = databaseDetails,
 	covariateSettings = covariateSettings,
 	restrictPlpDataSettings = restrictPlpDataSettings
 )
 	
-PatientLevelPrediction::savePlpData(plpData, "~/Home/cohort_test_model_Gio")
+PatientLevelPrediction::savePlpData(plpData, file.path(getwd(), 'atlas_plp_data'))
 ```
 
 ### Additional inclusion criteria
@@ -388,8 +396,8 @@ populationSettings <- PatientLevelPrediction::createStudyPopulationSettings(
 	priorOutcomeLookback = 99999,
 	riskWindowStart = 1,
 	riskWindowEnd = 90,
-	startAnchor =  'cohort start',
-  endAnchor =  'cohort start',
+	startAnchor = 'cohort start',
+  endAnchor = 'cohort start',
 	minTimeAtRisk = 30,
 	requireTimeAtRisk = TRUE,
 	includeAllOutcomes = TRUE
@@ -412,29 +420,27 @@ splitSettings <- PatientLevelPrediction::createDefaultSplitSetting(
  
 It was used the default sample settings. it simply returns the trainData as input, see below: 
 
-```{r tidy=FALSE,eval=FALSE}
-  sampleSettings <- PatientLevelPrediction::createSampleSettings()
+```{r tidy=FALSE, eval=FALSE}
+sampleSettings <- PatientLevelPrediction::createSampleSettings()
 ```
 
 However, the current package contains methods of under-sampling the non-outcome patients.  To perform undersampling, the `type` input should be 'underSample' and `numberOutcomestoNonOutcomes` must be specified (an integer specifying the number of non-outcomes per outcome).  It is possible to add any custom function for over/under sampling, see [vignette for custom sampling](https://github.com/OHDSI/PatientLevelPrediction/blob/master/inst/doc/AddingCustomSamples.pdf).
 
 It is possible to specify a combination of feature engineering functions that take as input the trainData and output a new trainData with different features.  The default feature engineering setting does nothing:
 
-```{r tidy=FALSE,eval=FALSE}
-  featureEngineeringSettings <- PatientLevelPrediction::createFeatureEngineeringSettings()
+```{r tidy=FALSE, eval=FALSE}
+featureEngineeringSettings <- PatientLevelPrediction::createFeatureEngineeringSettings()
 ```
-
 
 Finally, the preprocessing settings.  For this setting it was defined `minFraction = 0.01`, this removes any features that is observed in the training data for less than 0.01 fraction of the patients. The input `normalize = T` specifies whether the features are scaled between 0 and 1.  The input `removeRedundancy = T` specifies whether features that are observed in all of the target population are removed.
 
-```{r tidy=FALSE,eval=FALSE}
-  preprocessSettings <- PatientLevelPrediction::createPreprocessSettings(
+```{r tidy=FALSE, eval=FALSE}
+preprocessSettings <- PatientLevelPrediction::createPreprocessSettings(
 	minFraction = 0.01, 
 	normalize = T, 
 	removeRedundancy = T
-	)
+)
 ```
-
 
 ### Model development
 
@@ -445,19 +451,25 @@ For the algorithm selection with considered two options:
 - [setGradientBoostingMachine](https://ohdsi.github.io/PatientLevelPrediction/reference/setGradientBoostingMachine.html) : [Gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) is a machine learning technique used in regression and classification tasks, among others. It gives a prediction model in the form of an ensemble of weak prediction models, which are typically decision trees.
 
 For our problem we choose to build a logistic regression model with the default hyper-parameters
-```{r tidy=TRUE,eval=FALSE}
-lrModel <- setLassoLogisticRegression()
+```{r tidy=TRUE, eval=FALSE}
+lrModel <- PatientLevelPrediction::setLassoLogisticRegression()
 ```
+
 For the gradient boosting machines model it was used the hyper-parameters explained in [vignette for building patient-level predictive models](https://github.com/OHDSI/PatientLevelPrediction/blob/main/inst/doc/BuildingPredictiveModels.pdf).
 
-```{r tidy=TRUE,eval=FALSE}
-lrModel <- setGradientBoostingMachine(ntrees = 5000, maxDepth = c(4, 7, 10), learnRate = c(0.001, 
-    0.01, 0.1, 0.9))
+```{r tidy=TRUE, eval=FALSE}
+lrModel <- PatientLevelPrediction::setGradientBoostingMachine(
+  ntrees = 5000, 
+  maxDepth = c(4, 7, 10), 
+  learnRate = c(0.001, 0.01, 0.1, 0.9)
+)
 ```
 
 The `runPlP` function requires the `plpData`, the `outcomeId` specifying the outcome being predicted and the settings: `populationSettings`, `splitSettings`, `sampleSettings`, `featureEngineeringSettings`, `preprocessSettings` and `modelSettings` to train and evaluate the model. 
 
-```{r tidy=FALSE,eval=FALSE}
+```{r tidy=FALSE, eval=FALSE}
+dir.create(file.path(getwd(), 'atlas_plp_model'), showWarnings = FALSE)
+
 lrResults <- PatientLevelPrediction::runPlp(
 	plpData = plpData,
 	outcomeId = 3, 
@@ -478,10 +490,14 @@ lrResults <- PatientLevelPrediction::runPlp(
 		runModelDevelopment = T, 
 		runCovariateSummary = T
 	), 
-	saveDirectory = file.path(getwd(), '/Home/cohort_test_model_Gio/model_test')
-	)
+	saveDirectory = file.path(getwd(), 'atlas_plp_model')
+)
 ```
 
 
 ### Result analysis
-Loren ipsum
+```{r}
+library(PatientLevelPrediction)
+library(dplyr)
+viewPlp(lrResults)
+```

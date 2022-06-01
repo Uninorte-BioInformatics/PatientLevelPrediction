@@ -21,3 +21,6 @@ standalone/build/*
 /python_models/*
 /mycache/*
 /inst/shiny/DiagnosticsExplorer/rsconnect/*
+
+#ATLAS Cohort SQL
+vignettes/atlas_cohorts

@@ -13,22 +13,24 @@ The prediction problem addressed in this vignette is associated with the populat
 
 
 <center>
-![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/observation_period_rxjloz.png)
+
+![Observation period](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/observation_period_rxjloz.png)
+
 </center>
 
 
 As shown in the figure below, to define a prediction problem, the first thing that must be defined is an initial time from which the data will be taken to generate the target cohort (T), then it must be defined the outcome we would like to predict by a cohort of outcomes (O) and time at risk (TAR). Then, once it is defined, the information must be crossed between the target cohort (T) and the results cohort (O), in such a way that the input information for the model and the prediction technique that can be obtained can be obtained. Let's select Note that those cases belonging to the outcome cohort (O) that have occurred during the observation period should be excluded from the model because they can cause problems in the prediction of the model design.
 
+
 <center>
 
-![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050926/MIMIC-III/prediction_problem_xqiirw.png)
+![Prediction problem](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050926/MIMIC-III/prediction_problem_xqiirw.png)
 
 </center>
 
 <center>
 
-
-![](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/target_outcome_xykdtj.png)
+![Target outcome](https://res.cloudinary.com/uninorte-bioinformatics/image/upload/v1654050927/MIMIC-III/target_outcome_xykdtj.png)
 
 </center>
 

@@ -71,6 +71,50 @@ Finally, the preprocessing settings.  For this setting it was defined `minFracti
 
 ### Model development
 
+For the algorithm selection with considered two options:
+
+- [setLassoLogisticRegression](https://ohdsi.github.io/PatientLevelPrediction/reference/setLassoLogisticRegression.html) : [LASSO regression](https://en.wikipedia.org/wiki/Lasso_(statistics)) is a regression analysis method that performs both variable selection and regularization in order to enhance the prediction accuracy and interpretability of the resulting statistical model.
+
+- [setGradientBoostingMachine](https://ohdsi.github.io/PatientLevelPrediction/reference/setGradientBoostingMachine.html) : [Gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) is a machine learning technique used in regression and classification tasks, among others. It gives a prediction model in the form of an ensemble of weak prediction models, which are typically decision trees.
+
+For our problem we choose to build a logistic regression model with the default hyper-parameters
+```{r tidy=TRUE,eval=FALSE}
+lrModel <- setLassoLogisticRegression()
+```
+For the gradient boosting machines model it was used the hyper-parameters explained in [vignette for building patient-level predictive models](https://github.com/OHDSI/PatientLevelPrediction/blob/main/inst/doc/BuildingPredictiveModels.pdf).
+
+```{r tidy=TRUE,eval=FALSE}
+lrModel <- setGradientBoostingMachine(ntrees = 5000, maxDepth = c(4, 7, 10), learnRate = c(0.001, 
+    0.01, 0.1, 0.9))
+```
+
+The `runPlP` function requires the `plpData`, the `outcomeId` specifying the outcome being predicted and the settings: `populationSettings`, `splitSettings`, `sampleSettings`, `featureEngineeringSettings`, `preprocessSettings` and `modelSettings` to train and evaluate the model. 
+
+```{r tidy=FALSE,eval=FALSE}
+lrResults <- PatientLevelPrediction::runPlp(
+	plpData = plpData,
+	outcomeId = 3, 
+	analysisId = 'Test',
+	analysisName = 'Demonstration of runPlp for training single PLP models',
+	populationSettings = populationSettings, 
+	splitSettings = splitSettings,
+	sampleSettings = sampleSettings, 
+	featureEngineeringSettings = featureEngineeringSettings, 
+	preprocessSettings = preprocessSettings,
+	modelSettings = lrModel,
+	logSettings = PatientLevelPrediction::createLogSettings(), 
+	executeSettings = PatientLevelPrediction::createExecuteSettings(
+		runSplitData = T, 
+		runSampleData = T, 
+		runfeatureEngineering = T, 
+		runPreprocessData = T, 
+		runModelDevelopment = T, 
+		runCovariateSummary = T
+	), 
+	saveDirectory = file.path(getwd(), '/Home/cohort_test_model_Gio/model_test')
+	)
+```
+
 
 ### Result analysis
 Loren ipsum

@@ -56,20 +56,23 @@ In this section, we present a form of executing this vignette by configuring a D
 
 - Make sure that the port 8787 is available on the machine that will run the Docker container.
 
-- Run the following command `docker run -d --name=<docker_name> --network=host -v <path_to_repository>:/home/ohdsi/workdir -e USER=ohdsi -e PASSWORD=ohdsi odysseusinc/rstudio-ohdsi:latest`. If the docker user is not on sudoers list/group, you may need to run it as sudo.
+- Run the following command:
+  ```{bash eval=FALSE}
+    docker run -d \
+    --name=<container-name> \
+    --network=host \
+    -e USER=ohdsi \
+    -e PASSWORD=ohdsi \
+    camaranto/rstudio-ohdsi-uninorte:latest
+  ```
+
+. If the docker user is not on sudoers list/group, you may need to run it as sudo.
 
 - On your browser, access to `http://localhost:8787` and login to rstudio using the following credentials:
   - **Username:** ohdsi
   - **Password:** ohdsi
   
-- We are using `PatientLevelPrediction` version 5.0.5, you can check the version of `PatientLevelPrediction` package by running `packageVersion('PatientLevelPrediction')` on the rstudio console. If you have a version mismatch run the following commands:
-  ```
-    install.packages('remotes')
-    remotes::install_github('OHDSI/FeatureExtraction')
-    remotes::install_github('OHDSI/PatientLevelPrediction')
-  ```
-  - If a confirmation is needed, press enter.
-  - Restart the rstudio session.
+- We are using the latest available version of `PatientLevelPrediction`, at the time of writing this paper it's version 5.0.5, you can check the version of `PatientLevelPrediction` package by running `packageVersion('PatientLevelPrediction')`.
   
 - On the file explorer, search for `vignettes/BuildingPredictiveModelsMimic.Rmd` file and run it.
 
